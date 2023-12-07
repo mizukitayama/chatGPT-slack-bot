@@ -1,0 +1,11 @@
+{
+  "apps": {
+    "TEEU3V2DQ": {
+      "app_id": "A06924RS63U",
+      "IsDev": false,
+      "team_domain": "engineer-s",
+      "team_id": "TEEU3V2DQ"
+    }
+  },
+  "default": "engineer-s"
+}
