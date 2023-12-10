@@ -1,6 +1,6 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import getResponseFromChatGPT from "./fetch_chatgpt.ts";
-import { load } from "https://deno.land/std@0.208.0/dotenv/mod.ts";
+import env from "../utils/env.ts";
 
 /**
  * Functions are reusable building blocks of automation that accept
@@ -67,29 +67,26 @@ export const GreetingFunctionDefinition = DefineFunction({
 export default SlackFunction(
   GreetingFunctionDefinition,
   async ({inputs, client}) => {
-    const env = await load();
-    console.log(env["SLACK_API_KEY"])
-    const token = env["SLACK_API_KEY"]
+    const token = await env("SLACK_API_KEY")
 
     // スレッドの履歴を全てとる
     const parent_ts = await client.conversations.replies({
-      token: token,
+      token,
       channel: inputs.channel_id,
       ts: inputs.message_ts,
       include_all_metadata: true,
     }).then((current) => current.messages?.[0].thread_ts)
 
     const repliesResponse = await client.conversations.replies({
-      token: token,
+      token,
       channel: inputs.channel_id,
       ts: parent_ts,
       include_all_metadata: true,
     })
 
-    //.replace(/<@([A-Z0-9]*)>/g, "")}))
-
     const allReplies:SlackMessageType[] = repliesResponse?.messages
     const prevConversations = allReplies?.map(reply => ({ role : reply.bot_id ? "assistant" : "user", content: reply.text.replace(/<@([A-Z0-9]*)>/g, "")}))
+    
     const response = await getResponseFromChatGPT(inputs.message, prevConversations)
     return {outputs: {updatedMsg: `<@${inputs.user_id}>\n` + response}};
   },

@@ -1,5 +1,6 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
 import { GreetingFunctionDefinition } from "../functions/greeting_function.ts";
+import { AddReactionDefinition } from "../functions/add_reaction.ts";
 
 /**
  * A workflow is a set of steps that are executed in order.
@@ -34,6 +35,11 @@ const GreetingWorkflow = DefineWorkflow({
  * built-in OpenForm function as a first step.
  * https://api.slack.com/automation/functions#open-a-form
  */
+
+GreetingWorkflow.addStep(AddReactionDefinition, {
+  channel: GreetingWorkflow.inputs.channel_id,
+  timestamp: GreetingWorkflow.inputs.message_ts,
+})
 
 const greetingFunctionStep = GreetingWorkflow.addStep(GreetingFunctionDefinition, {
   message: GreetingWorkflow.inputs.text,

@@ -7,9 +7,9 @@ import GreetingWorkflow from "./workflows/greeting_workflow.ts";
  * https://api.slack.com/automation/manifest
  */
 export default Manifest({
-  name: "chat-gpt",
+  name: "ChatGPT4",
   description:
-    "A sample that demonstrates using a function, workflow and trigger to send a greeting",
+    "This is ChatGPT bot. Mention me and I'll respond you.",
   icon: "assets/default_new_app_icon.png",
   workflows: [GreetingWorkflow],
   outgoingDomains: ['api.openai.com'],
@@ -20,9 +20,5 @@ export default Manifest({
     "datastore:read",
     "datastore:write",
     "app_mentions:read",
-    "channels:history",
-    "groups:history",
-    "im:history",
-    "mpim:history"
   ],
 });
