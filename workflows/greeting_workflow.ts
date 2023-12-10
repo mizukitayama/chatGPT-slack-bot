@@ -39,7 +39,7 @@ const greetingFunctionStep = GreetingWorkflow.addStep(GreetingFunctionDefinition
   message: GreetingWorkflow.inputs.text,
   user_id: GreetingWorkflow.inputs.user_id,
   channel_id: GreetingWorkflow.inputs.channel_id,
-  message_ts: GreetingWorkflow.inputs.message_ts
+  message_ts: GreetingWorkflow.inputs.message_ts,
 })
 
 GreetingWorkflow.addStep(
@@ -49,7 +49,7 @@ GreetingWorkflow.addStep(
       channel_id: GreetingWorkflow.inputs.channel_id,
       message_ts: GreetingWorkflow.inputs.message_ts
     },
-    // reply_broadcast: false,
+    reply_broadcast: false,
     message: greetingFunctionStep.outputs.updatedMsg
   },
   );

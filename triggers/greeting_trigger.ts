@@ -1,7 +1,13 @@
 import { Trigger } from "deno-slack-sdk/types.ts";
 import { TriggerContextData, TriggerEventTypes, TriggerTypes } from "deno-slack-api/mod.ts";
 import GreetingWorkflow from "../workflows/greeting_workflow.ts";
+import { load } from "https://deno.land/std@0.208.0/dotenv/mod.ts";
+import { PopulatedArray } from "deno-slack-api/type-helpers.ts";
 
+const env = await load();
+const channel_ids_from_env = env["CHANNEL_IDS"]
+const channel_ids: PopulatedArray<string> = channel_ids_from_env.split(" ") as PopulatedArray<string>
+console.log(channel_ids)
 /**
  * Triggers determine when workflows are executed. A trigger
  * file describes a scenario in which a workflow should be run,
@@ -12,7 +18,7 @@ const greetingTrigger: Trigger<typeof GreetingWorkflow.definition> = {
   type: TriggerTypes.Event,
   event: {
     event_type: TriggerEventTypes.AppMentioned,
-    channel_ids: ['C068NQYT4QN']
+    channel_ids
   },
   name: "Sample event trigger",
   description: "A sample event trigger",
