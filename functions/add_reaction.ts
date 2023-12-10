@@ -13,22 +13,22 @@ export const AddReactionDefinition = DefineFunction({
       },
       timestamp: {
         type: Schema.slack.types.message_ts,
-      }
+      },
     },
-    required: ["channel", "timestamp"]
+    required: ["channel", "timestamp"],
   },
-})
+});
 
 export default SlackFunction(
   AddReactionDefinition,
-  async ({inputs, client}) => {
-    const token = await env("SLACK_API_KEY")
+  async ({ inputs, client }) => {
+    const token = await env("SLACK_API_KEY");
     await client.reactions.add({
       token,
       channel: inputs.channel,
       timestamp: inputs.timestamp,
       name: "white_check_mark",
-    })
-    return {outputs: {}}
-  }
-)
+    });
+    return { outputs: {} };
+  },
+);

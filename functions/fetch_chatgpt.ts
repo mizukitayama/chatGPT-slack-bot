@@ -2,15 +2,17 @@ import { load } from "https://deno.land/std@0.208.0/dotenv/mod.ts";
 
 const getResponseFromChatGPT = async (
   input: string,
-  prevConversations: {role: string, content: string}[] | undefined
+  prevConversations: { role: string; content: string }[] | undefined,
 ) => {
   const env = await load();
-  const apiKey = env["OPEN_AI_API_KEY"]
+  const apiKey = env["OPEN_AI_API_KEY"];
   const endpoint = "https://api.openai.com/v1/chat/completions";
 
-  console.log(prevConversations)
+  console.log(prevConversations);
   // NOTE: 過去のやり取りの中に送ったメッセージも含まれる。
-  const messages = prevConversations ? prevConversations : [{ "role": "user", "content": input }]
+  const messages = prevConversations
+    ? prevConversations
+    : [{ "role": "user", "content": input }];
 
   const response = await fetch(endpoint, {
     method: "POST",
@@ -34,7 +36,7 @@ const getResponseFromChatGPT = async (
       }
     })
     .catch((error) => {
-      return error.message || '不明なエラーが発生しました。';
+      return error.message || "不明なエラーが発生しました。";
     });
   return response;
 };
