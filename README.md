@@ -33,8 +33,7 @@ slack env add CHANNEL_IDS 'C0xxxxxxx C0xxxxxxx C0xxxxxxx C0xxxxxxx'
     - groups:history
     - im:history
     - mpim:history
-    - reactions:write
-  - 会話履歴の取得とリアクションの追加に使われる
+  - 会話履歴の取得に使われる
 - OPEN_AI_API_KEY
   - Billingの設定をしたアカウントであることを確認する：https://platform.openai.com/account/billing/overview
   - keyを生成：https://platform.openai.com/api-keys
@@ -44,7 +43,7 @@ slack env add CHANNEL_IDS 'C0xxxxxxx C0xxxxxxx C0xxxxxxx C0xxxxxxx'
   - チャンネル内でメンションされるとbotがトリガーされる
   - ボットを使いたいチャンネルID。半角空白区切りで複数のチャンネル設定可能
 
-*ローカルで実行する場合、.env.sampleファイルを.envファイルに書き換え、同じキーを登録する*
+**ローカルで実行する場合、.env.sampleファイルを.envファイルに書き換え、同じキーを登録する**
 
 
 3. トリガーの作成
