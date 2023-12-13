@@ -72,7 +72,3 @@ slack run
 ```bash
 slack activity
 ```
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
