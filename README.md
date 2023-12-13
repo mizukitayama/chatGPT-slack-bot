@@ -1,5 +1,9 @@
 ## Installation
 
+```bash
+git clone git@github.com:mizukitayama/chatGPT-slack-bot.git && cd chatGPT-slack-bot
+```
+
 1. Slack CLIのインストール
 
 ```bash
@@ -10,10 +14,6 @@ $ curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
 
 ```bash
 slack login
-```
-
-```bash
-git clone git@github.com:mizukitayama/chatGPT-slack-bot.git && cd chatGPT-slack-bot
 ```
 
 3. 環境変数をCLIから設定
