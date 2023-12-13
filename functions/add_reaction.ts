@@ -1,5 +1,4 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import env from "../utils/env.ts";
 
 export const AddReactionDefinition = DefineFunction({
   callback_id: "adding_reaction_function",
@@ -21,8 +20,8 @@ export const AddReactionDefinition = DefineFunction({
 
 export default SlackFunction(
   AddReactionDefinition,
-  async ({ inputs, client }) => {
-    const token = await env("SLACK_API_KEY");
+  async ({ inputs, client, env }) => {
+    const token = env["SLACK_API_KEY"]
     await client.reactions.add({
       token,
       channel: inputs.channel,

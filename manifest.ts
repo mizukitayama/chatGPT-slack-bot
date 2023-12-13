@@ -1,5 +1,5 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
-import GreetingWorkflow from "./workflows/asking_chatgpt_workflow.ts";
+import AskingChatGPTworkflow from "./workflows/asking_chatgpt_workflow.ts";
 
 /**
  * The app manifest contains the app's configuration. This
@@ -9,9 +9,9 @@ import GreetingWorkflow from "./workflows/asking_chatgpt_workflow.ts";
 export default Manifest({
   name: "ChatGPT4",
   description:
-    "This is ChatGPT bot. Mention me and I'll respond you.",
-  icon: "assets/default_new_app_icon.png",
-  workflows: [GreetingWorkflow],
+    "This is ChatGPT bot. Mention me and I'll respond you. In case I was not useful, edit your message and submit again.",
+  icon: "assets/chatgpt_logo.png",
+  workflows: [AskingChatGPTworkflow],
   outgoingDomains: ['api.openai.com'],
   botScopes: [
     "commands",

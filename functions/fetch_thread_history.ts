@@ -1,6 +1,5 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import getResponseFromChatGPT from "./fetch_chatgpt.ts";
-import env from "../utils/env.ts";
+// import env from "../utils/env.ts";
 
 /**
  * Functions are reusable building blocks of automation that accept
@@ -31,19 +30,13 @@ type SlackMessageType = {
   app_id?: string;
 };
 
-export const RequestingChatgptFunction = DefineFunction({
-  callback_id: "requesting_chatgpt_function",
-  title: "Fetching conversations and requesting ChatGPT",
-  description: "Fetching conversations in threads and requesting ChatGPT",
-  source_file: "functions/requesting_chatgpt_function.ts",
+export const FetchThreadHistory = DefineFunction({
+  callback_id: "fetch_thread_history",
+  title: "fetching thread history",
+  description: "fetching thread history",
+  source_file: "functions/fetch_thread_history.ts",
   input_parameters: {
     properties: {
-      message: {
-        type: Schema.types.string,
-      },
-      user_id: {
-        type: Schema.slack.types.user_id,
-      },
       channel_id: {
         type: Schema.slack.types.channel_id,
       },
@@ -51,22 +44,31 @@ export const RequestingChatgptFunction = DefineFunction({
         type: Schema.slack.types.message_ts,
       },
     },
-    required: ["message", "user_id", "channel_id", "message_ts"],
+    required: ["channel_id", "message_ts"],
   },
   output_parameters: {
     properties: {
-      updatedMsg: {
-        type: Schema.slack.types.rich_text,
+      prevConversationsRoles: {
+        type: Schema.types.array,
+        items: {
+          type: Schema.types.string,
+        },
+      },
+      prevConversationsContent: {
+        type: Schema.types.array,
+        items: {
+          type: Schema.types.string,
+        },
       },
     },
-    required: ["updatedMsg"],
+    required: [],
   },
 });
 
 export default SlackFunction(
-  RequestingChatgptFunction,
-  async ({ inputs, client }) => {
-    const token = await env("SLACK_API_KEY");
+  FetchThreadHistory,
+  async ({ inputs, client, env }) => {
+    const token = env["SLACK_API_KEY"];
 
     // スレッドの履歴を全てとる
     const parent_ts = await client.conversations.replies({
@@ -84,15 +86,13 @@ export default SlackFunction(
     });
 
     const allReplies: SlackMessageType[] = repliesResponse?.messages;
-    const prevConversations = allReplies?.map((reply) => ({
-      role: reply.bot_id ? "assistant" : "user",
-      content: reply.text.replace(/<@([A-Z0-9]*)>/g, ""),
-    }));
+    const prevConversationsRoles: string[] = allReplies?.map((reply) => {
+      return reply.bot_id ? "assistant" : "user";
+    });
 
-    const response = await getResponseFromChatGPT(
-      inputs.message,
-      prevConversations,
-    );
-    return { outputs: { updatedMsg: `<@${inputs.user_id}>\n` + response } };
+    const prevConversationsContent: string[] = allReplies?.map((reply) => {
+      return reply.text.replace(/<@([A-Z0-9]*)>/g, "");
+    });
+    return { outputs: { prevConversationsRoles, prevConversationsContent } };
   },
 );

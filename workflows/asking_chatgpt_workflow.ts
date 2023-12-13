@@ -1,6 +1,7 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { RequestingChatgptFunction } from "../functions/requesting_chatgpt_function.ts";
+import { FetchThreadHistory } from "../functions/fetch_thread_history.ts";
 import { AddReactionDefinition } from "../functions/add_reaction.ts";
+import { GetResponseFromChatGPTFunction } from "../functions/fetch_chatgpt.ts";
 
 /**
  * A workflow is a set of steps that are executed in order.
@@ -43,15 +44,22 @@ AskingChatGPTworkflow.addStep(AddReactionDefinition, {
 });
 
 // スレッドの履歴をとり、ChatGPTにリクエストを送る
-const greetingFunctionStep = AskingChatGPTworkflow.addStep(
-  RequestingChatgptFunction,
+const threadHistories = AskingChatGPTworkflow.addStep(
+  FetchThreadHistory,
   {
-    message: AskingChatGPTworkflow.inputs.text,
-    user_id: AskingChatGPTworkflow.inputs.user_id,
     channel_id: AskingChatGPTworkflow.inputs.channel_id,
     message_ts: AskingChatGPTworkflow.inputs.message_ts,
   },
 );
+
+const replyContent = AskingChatGPTworkflow.addStep(
+  GetResponseFromChatGPTFunction, {
+    input: AskingChatGPTworkflow.inputs.text,
+    user_id: AskingChatGPTworkflow.inputs.user_id,
+    prevConversationsRoles: threadHistories.outputs.prevConversationsRoles,
+    prevConversationsContent: threadHistories.outputs.prevConversationsContent,
+  }
+)
 
 // ChatGPTからの返答を送信
 AskingChatGPTworkflow.addStep(
@@ -62,7 +70,7 @@ AskingChatGPTworkflow.addStep(
       message_ts: AskingChatGPTworkflow.inputs.message_ts,
     },
     reply_broadcast: false,
-    message: greetingFunctionStep.outputs.updatedMsg,
+    message: replyContent.outputs.response,
   },
 );
 

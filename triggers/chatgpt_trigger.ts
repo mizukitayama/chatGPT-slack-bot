@@ -9,9 +9,7 @@ import { PopulatedArray } from "deno-slack-api/type-helpers.ts";
 import env from "../utils/env.ts";
 
 const channel_ids_from_env = await env("CHANNEL_IDS");
-const channel_ids: PopulatedArray<string> = channel_ids_from_env.split(
-  " ",
-) as PopulatedArray<string>;
+const channel_ids: PopulatedArray<string> = channel_ids_from_env?.split(" ") as PopulatedArray<string>;
 
 console.log("Installing app to: ", channel_ids);
 
